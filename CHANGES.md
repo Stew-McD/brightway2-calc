@@ -1,4 +1,153 @@
-# Changelog
+# `bw2calc` Changelog
+
+## 2.0.DEV13 (2023-08-24)
+
+* Packaging updates
+
+## 2.0.DEV13 (2023-05-07)
+
+* CI workflow updates
+* Merge [#65](https://github.com/brightway-lca/brightway2-calc/pull/65): Add PyPI and conda-forge badge
+* Fix hidden dependency on `bw2data`
+
+## 2.0.DEV12 (2022-09-19)
+
+* Add some backwards compatiblity methods
+
+## 2.0.DEV11 (2022-08-31)
+
+* Merged [PR #63 Multifunctional graph traversal](https://github.com/brightway-lca/brightway2-calc/pull/63)
+* Changed `GraphTraversal` to `AssumedDiagonalGraphTraversal`. `GraphTraversal` still exists as a proxy but raises a `DeprecationWarning`
+
+## 2.0.DEV10 (2022-08-19)
+
+* Add ``LCA.to_dataframe``, based on work by Ben Portner
+
+## 2.0.DEV9 (2022-07-07)
+
+* [#61 wrap_functional_unit missing from multi_lca.py](https://github.com/brightway-lca/brightway2-calc/pull/58)
+* MultiLCA is useable again
+
+## 2.0.DEV8 (2022-06-28)
+
+* [#58 use logger at module level, not from LCA](https://github.com/brightway-lca/brightway2-calc/pull/58)
+* [#59 Fix a number of testing issues](https://github.com/brightway-lca/brightway2-calc/pull/59)
+
+## 2.0.DEV7 (2022-05-22)
+
+* Add `LCA.keep_first_iteration` to make iteration simpler
+
+## 2.0.DEV6 (2022-04-23)
+
+* Add an optional warning on LCA instantiation if excluding resources (arrays or distributions) which could be useful
+* Add function stubs to be used by subclasses on iteration
+
+## 2.0.DEV5 (2021-11-26)
+
+* Fix a bug in `switch_method` if given a `bw2data` method tuuple instead of a list of datapackages.
+
+## 2.0.DEV4 (2021-11-03)
+
+* Add `invert_technosphere_matrix` with algo from @haasad
+* Fix `switch_method`, `switch_normalization`, `switch_weighting`
+
+Compatibility changes:
+
+* `LCA.score` will return weighted or normalized score, if weighting or normalization has been performed
+* `LCA.weighting` will now trigger a deprecation warning. Switch to `.weight` instead.
+* `LCA.redo_lci` deprecated in favor of `LCA.lci(demand)`; `LCA.redo_lcia` deprecated in favor of `LCA.lcia(demand)`
+
+## 2.0.DEV3 (2021-10-17)
+
+* Fix for constructing characterization matrices with semi-regionalized impact categories
+
+## 2.0.DEV2 (2021-10-01)
+
+* More 2.5 work and fixes
+
+# 2.0.DEV1
+
+Version 2.0 brings a number of large changes, while maintaining backwards compatibility (except for dropping Py2). The net result of these changes is to prepare for a future where data management is separated from calculations, and where working with large, complicated models is much easier.
+
+## Future DEV releases
+
+Before 2.0 is released, the following features will be added:
+
+* Presamples will be adapted to use `bw_processing`
+* Logging will be taken seriously :)
+* ~~LCA results to dataframes~~
+
+## Breaking changes
+
+### Simplification of user endpoints
+
+The structure of this library has been simplified, as the `LCA` class can now perform static, stochastic (Monte Carlo), iterative (scenario-based), and single-matrix LCA calculations. Matrix building has been moved to the [matrix_utils](https://github.com/brightway-lca/matrix_utils) library.
+
+### Python 2 compatibility removed
+
+Removing the Python 2 compatibility layer allows for much cleaner and more compact code, and the use of some components from the in-development Brightway version 3 libraries. Compatible with `bw2data` version 4.0.
+
+### Removal of classes and methods
+
+* `LCA.rebuild_*_matrix` methods are removed. See the [TODO]() notebook for alternatives.
+* `DirectSolvingMixin` and `DirectSolvingMonteCarloLCA` are removed, direct solving is now the default
+* `ComparativeMonteCarlo` is removed, use `MultiLCA(use_distributions=True)` instead
+* `SingleMatrixLCA` is remove, use `LCA` instead. It allows for empty biosphere matrices.
+
+### Simplified handling of mapping dictionaries
+
+Mapping dictionaries map the database identifiers to row and column indices. In 2.5, these mapping dictionaries are only created on demand; avoiding their creation saves a bit of time and memory.
+
+Added a new class (`DictionaryManager`) and made it simpler reverse, remap, and get the original dictionaries inside an `LCA`. Here is an example:
+
+```python
+LCA.dicts.biosphere[x]
+>> y
+LCA.dicts.biosphere.original # if remapped with activity keys
+LCA.dicts.biosphere.reversed[y]  # (generated on demand)
+>> x
+```
+
+The dictionaries in a conventional LCA are:
+
+* LCA.dicts.product
+* LCA.dicts.activity
+* LCA.dicts.biosphere
+
+~~`LCA.reverse_dict` is removed; all reversed dictionaries are available at `LCA.dicts.{name}.reversed`~~.
+
+In 2.5, these mapping dictionaries are not automatically "remapped" to the `(database name, activity code)` keys. You will need to call `.remap_inventory_dicts()` after doing an inventory calculation to get mapping dictionaries in this format.
+
+### Weighting is a diagonal matrix instead of a single number
+
+It is easier to have everything in the same mode of operation. This also allows for the use of arrays, distributions, interfaces, etc. in weighting. Implemented in new `SingleValueDiagonalMatrix` class.
+
+## Architectual changes
+
+### Use of `bw_processing`
+
+We now use [bw_processing](https://github.com/brightway-lca/bw_processing) to load processed arrays. `bw_processing` has separate files for the technosphere and biosphere arrays, and explicit indication of . Therefore, the `TechnosphereBiosphereMatrixBuilder` is no longer necessary, and is removed.
+
+### No dependency on `bw2data`
+
+`bw2data` is now an optional install, and even if available only a single utility function is used to prepare input data. `bw2calc` is primarily intended to be used as an independent library.
+
+### Changes in Monte Carlo
+
+
+## Smaller changes
+
+### New LCA input specification
+
+The existing input specification is still there, but this release also adds the ability to specify input arguments compatible with Brightway version 3. Previously, we would write `LCA({some demand}, method=foo)` - this requires `bw2calc` to use `bw2data` to figure out the dependent databases of the functional unit in `some demand`, and then to get the file paths of all the necessary files for both the inventory and impact assessment. The new syntax is `LCA({some demand}, data_objs)`, where `some demand` is already integer IDs, and `data_objects` is a lists of data packages (either in memory or on the filesystem).
+
+`bw2data` has a helper function to prepare arguments in the new syntax: `prepare_lca_inputs`.
+
+This new input syntax, with consistent column labels for all structured arrays, removes the need for `IndependentLCAMixin`. This is deleted, and the methods `get_vector`, `get_vector_metadata`, and `set_vector` are added.
+
+### More robust matrix building
+
+More tests were identified, and undefined behaviour is now specified. For example, the previous matrix builders assumed that the values in the provided row or column dictionaries were sequential integers starting from zero - this assumption is now relaxed, and we allow this dictionary values to start with an offset. There are also tests and documentation on what happens under various cases when `drop_missing` is `False`, but missing values are present.
 
 ### 1.8.2 (2023-02-24)
 

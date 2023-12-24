@@ -19,7 +19,11 @@ jobs:
 
   - bash: |
       source activate bw2
+<<<<<<< HEAD
       conda install --yes --quiet -c defaults -c conda-forge -c cmutel -c haasad --name bw2 python=$PYTHON_VERSION brightway2 bw2data=3.6.6 pandas scipy psutil pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+=======
+      conda install --yes --quiet -c defaults -c conda-forge -c cmutel -c haasad --name bw2 python=$PYTHON_VERSION numpy bw_processing bw2data matrix_utils pandas scipy pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+>>>>>>> upstream/main
     displayName: Install Anaconda packages
 
   - bash: |
@@ -57,16 +61,27 @@ jobs:
       displayName: create virtualenv
 
     - bash: |
+<<<<<<< HEAD
         source bw2/bin/activate
+=======
+        source bw2/bin/activate      
+>>>>>>> upstream/main
         pip install -U pip
         pip --version
       displayName: Update pip in virtualenv
 
     - bash: |
+<<<<<<< HEAD
         source bw2/bin/activate
         python --version
         pip --version
         pip install numpy brightway2 bw2data==3.6.6 pandas scipy psutil pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+=======
+        source bw2/bin/activate      
+        python --version
+        pip --version
+        pip install --pre numpy bw_processing bw2data matrix_utils pandas scipy pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+>>>>>>> upstream/main
         echo "which pytest: "
         which pytest
         echo "pytest version: "
@@ -76,7 +91,11 @@ jobs:
       displayName: Install testing dependencies
 
     - bash: |
+<<<<<<< HEAD
         source bw2/bin/activate
+=======
+        source bw2/bin/activate      
+>>>>>>> upstream/main
         pip install -e .
         pytest --cov=bw2calc --color=yes -v --cov-report html
       displayName: Run pytest
@@ -103,7 +122,11 @@ jobs:
 
   - bash: |
       source activate bw2
+<<<<<<< HEAD
       conda install --yes --quiet -c defaults -c conda-forge -c cmutel -c haasad --name bw2 python=$PYTHON_VERSION numpy brightway2 bw2data=3.6.6 pandas scipy psutil pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+=======
+      conda install --yes --quiet -c defaults -c conda-forge -c cmutel -c haasad --name bw2 python=$PYTHON_VERSION numpy bw_processing bw2data matrix_utils pandas scipy pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+>>>>>>> upstream/main
     displayName: Install Anaconda packages
 
   - bash: |
@@ -132,7 +155,11 @@ jobs:
 
   - script: |
       call activate bw2
+<<<<<<< HEAD
       conda install --yes --quiet -c defaults -c conda-forge -c cmutel -c haasad --name bw2 python=%PYTHON_VERSION% numpy brightway2 bw2data=3.6.6 pandas scipy psutil pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+=======
+      conda install --yes --quiet -c defaults -c conda-forge -c cmutel -c haasad --name bw2 python=%PYTHON_VERSION% numpy bw_processing bw2data matrix_utils pandas scipy pypardiso pytest peewee pytest pytest-azurepipelines">=1.0.2" pytest-cov
+>>>>>>> upstream/main
     displayName: Install Anaconda packages
 
   - script: |

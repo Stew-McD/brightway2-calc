@@ -103,5 +103,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+<<<<<<< HEAD
 # Machine-dependent
+=======
+>>>>>>> upstream/main
 pyrightconfig.json

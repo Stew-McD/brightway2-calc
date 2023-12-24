@@ -1,5 +1,10 @@
 from setuptools import setup
 
+v_temp = {}
+with open("bw2calc/version.py") as fp:
+    exec(fp.read(), v_temp)
+version = ".".join((str(x) for x in v_temp["version"]))
+
 
 setup(
     name='bw2calc',
@@ -10,8 +15,10 @@ setup(
     license="NewBSD 3-clause; LICENSE.txt",
     url="https://bitbucket.org/cmutel/brightway2-calc",
     install_requires=[
-        "eight",
+        "bw_processing",
+        "matrix_utils",
         "numpy",
+        "pandas",
         "scipy",
         "stats_arrays",
     ],
@@ -25,9 +32,12 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 2 :: Only',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Scientific/Engineering :: Mathematics',
         'Topic :: Scientific/Engineering :: Visualization',

@@ -1,8 +1,5 @@
-brightway2
-eight
-numpy
+bw2data
+pypardiso
 pytest
 pytest-cov
 python-coveralls
-scipy
-stats_arrays
